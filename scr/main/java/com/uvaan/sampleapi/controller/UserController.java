@@ -39,12 +39,12 @@ public class UserController {
 	@Autowired
 	UserValidation userValidator;
 
-	@Autowired
-	UserService userService;
+	@Autowired(required = true)
+	UserService userServ;
 
 	@RequestMapping(path = "/getUserById/{id}", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
 	public ApiResponse getUserById(@PathVariable("id") Long id) {
-		User user = userService.getUserById(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+		User user = userServ.getUserById(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
 		return new ApiResponse(HttpStatus.OK, Constants.SUCCESS, user);
 	}
 
@@ -57,7 +57,7 @@ public class UserController {
 		if (list.size() > 0) {
 			throw new SampleException(list);
 		}
-		User user = userService.createUser(userParam);
+		User user = userServ.createUser(userParam);
 		return new ApiResponse(HttpStatus.OK, Constants.SUCCESS, user);
 	}
 
@@ -70,27 +70,14 @@ public class UserController {
 		if (list.size() > 0) {
 			throw new SampleException(list);
 		}
-		User user = userService.updateUser(userParam);
+		User user = userServ.updateUser(userParam);
 		return new ApiResponse(HttpStatus.OK, Constants.SUCCESS, user);
-	}
-
-	@RequestMapping(path = "/getAllUsers", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
-	public ApiResponse getAllUsers(@RequestBody UserParam userParam, BindingResult result) {
-		Map<String, String> map = new HashMap<String, String>();
-		MapBindingResult err = new MapBindingResult(map, UserParam.class.getName());
-		userValidator.validateParameters(userParam, err);
-		List<ObjectError> errList = err.getAllErrors();
-		if (errList.size() > 0) {
-			throw new SampleException(errList);
-		}
-		List<User> list = userService.getAllUsers(userParam);
-		return new ApiResponse(HttpStatus.OK, Constants.SUCCESS, list);
 	}
 
 	@RequestMapping(path = "/deleteUser/{id}", method = RequestMethod.POST)
 	public ApiResponse deleteUser(@PathVariable("id") Long id) {
 		getUserById(id);
-		userService.deleteUser(id);
+		userServ.deleteUser(id);
 		HashMap<String, String> map = new HashMap<String, String>();
 		map.put("message", "User deleted Successfully..");
 		return new ApiResponse(HttpStatus.OK, Constants.SUCCESS, map);

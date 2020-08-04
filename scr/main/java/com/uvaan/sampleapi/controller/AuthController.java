@@ -21,9 +21,6 @@ import com.uvaan.sampleapi.param.UserParam;
 import com.uvaan.sampleapi.service.JwtUserDetailsService;
 import com.uvaan.sampleapi.service.UserService;
 
-
-
-
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController<GenericResponse, StandardStringDigester> {
@@ -40,10 +37,9 @@ public class AuthController<GenericResponse, StandardStringDigester> {
 	@Autowired
 	private JwtUserDetailsService userDetailsService;
 
-	@Autowired
-	private UserService userService;
-	
-	
+	@Autowired(required = true)
+	UserService userService;
+
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody UserParam userParam) throws Exception {
 
@@ -53,22 +49,11 @@ public class AuthController<GenericResponse, StandardStringDigester> {
 		final String token = jwtTokenUtil.generateToken(userDetails);
 		Map<String, String> model = new HashMap<String, String>();
 		User user = userService.findByEmail(userParam.getEmail());
-		model.put("password", user.getPassword());
 		model.put("email", user.getEmail());
 		// model.put("roles", this.users.findByEmail(username).getRoles());
 		model.put("token", token);
-		//model.put("forcePasswordChange", user.getForcePasswordChange());
-		/*
-		 * //ChitFundOrganizers orga =
-		 * chitFundOrganizersService.getChitFundOrganizerByUserId(user.getId()); if(null
-		 * == orga) { throw new ResourceNotFoundException("ChitFundOrganizers", "id",
-		 * user.getId()); }
-		 */
-        //model.put("organizerId", orga.getId().toString());
 		return ResponseEntity.ok(model);
 	}
-
-	
 
 	private void authenticate(String username, String password) throws Exception {
 		try {

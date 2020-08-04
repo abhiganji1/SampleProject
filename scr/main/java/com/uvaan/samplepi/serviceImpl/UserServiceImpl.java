@@ -1,11 +1,7 @@
 package com.uvaan.samplepi.serviceImpl;
 
-import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,17 +15,13 @@ import com.uvaan.sampleapi.param.UserParam;
 import com.uvaan.sampleapi.repository.UserRepository;
 import com.uvaan.sampleapi.service.UserService;
 
-//@ Transactional
+@Transactional
 @Service
 public class UserServiceImpl implements UserService {
 
 	@Autowired
 	UserRepository userRepository;
-	
-	@PersistenceContext
-	private EntityManager entityManager;
 
-	
 	@Autowired
 	UserService usersServices;
 
@@ -41,84 +33,23 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User createUser(UserParam userParam) {
-		
 
 		User user = null;
 		user = new User();
 		user.setEmail(userParam.getEmail());
 		user.setPassword(userParam.getPassword());
-		user.setCreatedby(userParam.getCreatedby());
-		user.setCreatedDate(userParam.getCreatedDate());
+		user.setCreatedBy(userParam.getCreatedby());
+		user.setCreatedDate(userParam.getCreateddate());
 		user.setUpdatedBy(userParam.getUpdatedby());
 		user.setUpdatedDate(userParam.getUpdaateddate());
-		
-		
+
 		try {
 			user = userRepository.save(getUserByParams(userParam, null));
 		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityViolationException("User is already exist for selected the mobile & countryCode,Please provide different valid fields.");
+			throw new DataIntegrityViolationException(
+					"User is already exist for selected the mobile & countryCode,Please provide different valid fields.");
 		}
 		return user;
-	}
-
-	@Override
-	public List<User> getAllUsers(UserParam userParam) {
-		List<User> result = null;
-		StringBuffer sqlQuery = new StringBuffer("from User a where 1=1");
-
-		if (0 != userParam.getId()) {
-			sqlQuery.append(" AND a.id = :id");
-		}
-		if (null != userParam.getEmail()) {
-			sqlQuery.append(" AND a.email = :email");
-		}
-		if (null != userParam.getPassword()) {
-			sqlQuery.append(" AND a.password = :password");
-		}
-		if (0 != userParam.getCreatedby()) {
-			sqlQuery.append(" AND a.createdby = :createdby");
-		}
-		if (null != userParam.getCreatedDate()) {
-			sqlQuery.append(" AND a.createddate = :createddate");
-		}
-		if (0 != userParam.getCreatedby()) {
-			sqlQuery.append(" AND a.updatedby = :updatedby");
-		}
-		if (null != userParam.getUpdaateddate()) {
-			sqlQuery.append(" AND a.updateddate = :updateddate");
-		}
-
-		sqlQuery.append(" order by a.id");
-		
-		Query query = entityManager.createQuery(sqlQuery.toString());
-
-		if (0 != userParam.getId()) {
-			sqlQuery.append(" AND a.id = :id");
-		}
-		if (null != userParam.getEmail()) {
-			sqlQuery.append(" AND a.email = :email");
-		}
-		if (null != userParam.getPassword()) {
-			sqlQuery.append(" AND a.password = :password");
-		}
-		if (0 != userParam.getCreatedby()) {
-			sqlQuery.append(" AND a.createdby = :createdby");
-		}
-		if (null != userParam.getCreatedDate()) {
-			sqlQuery.append(" AND a.createddate = :createddate");
-		}
-		if (0 != userParam.getCreatedby()) {
-			sqlQuery.append(" AND a.updatedby = :updatedby");
-		}
-		if (null != userParam.getUpdaateddate()) {
-			sqlQuery.append(" AND a.updateddate = :updateddate");
-		}
-
-		
-		
-		result = query.getResultList();
-
-		return result;
 	}
 
 	@Override
@@ -135,13 +66,14 @@ public class UserServiceImpl implements UserService {
 			user = getUserByParams(userParam, user);
 			user = userRepository.save(user);
 		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityViolationException("User is already exist for selected the mobile & countryCode,Please provide different valid fields.");
+			throw new DataIntegrityViolationException(
+					"User is already exist for selected the mobile & countryCode,Please provide different valid fields.");
 		}
 		return user;
 	}
 
 	private User getUserByParams(UserParam userParam, User user) {
-		user.setId(userParam.getId());
+
 		if (null == userParam.getEmail()) {
 			userParam.setEmail(user.getEmail());
 
@@ -151,11 +83,11 @@ public class UserServiceImpl implements UserService {
 
 		}
 		if (0 == userParam.getCreatedby()) {
-			userParam.setCreatedby(user.getCreatedby());
+			userParam.setCreatedby(user.getCreatedBy());
 
 		}
-		if (null == userParam.getCreatedDate()) {
-			userParam.setCreatedDate(user.getCreatedDate());
+		if (null == userParam.getCreateddate()) {
+			userParam.setCreateddate(user.getCreatedDate());
 
 		}
 		if (0 == userParam.getCreatedby()) {
@@ -167,14 +99,12 @@ public class UserServiceImpl implements UserService {
 
 		}
 
-		
-
-	user.setEmail(userParam.getEmail());
-	user.setPassword(userParam.getPassword());
-	user.setCreatedby(userParam.getCreatedby());
-	user.setCreatedDate(userParam.getCreatedDate());
-	user.setUpdatedBy(userParam.getUpdatedby());
-	user.setUpdatedDate(userParam.getUpdaateddate());
+		user.setEmail(userParam.getEmail());
+		user.setPassword(userParam.getPassword());
+		user.setCreatedBy(userParam.getCreatedby());
+		user.setCreatedDate(userParam.getCreateddate());
+		user.setUpdatedBy(userParam.getUpdatedby());
+		user.setUpdatedDate(userParam.getUpdaateddate());
 		return user;
 	}
 
@@ -182,7 +112,5 @@ public class UserServiceImpl implements UserService {
 	public User findByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
-
-	
 
 }

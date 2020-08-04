@@ -5,45 +5,36 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import org.dom4j.tree.AbstractEntity;
+import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "users")
+@JsonIgnoreProperties(value = { "password", "createdDate", "createdBy" }, allowGetters = true)
 public class User extends AbstractEntity {
-	@Column(name = "id")
-	private Long id;
+
+	@NotBlank
 
 	@Column(name = "email")
-	
 	private String email;
 
-	
 	@Column(name = "password")
 	@JsonIgnore
 	private String password;
 
-	@Column(name = "created_by")
-	private int createdby;
-
 	@Column(name = "created_date")
 	private Date createdDate;
 
-	@Column(name = "updated_by")
-	private int updatedBy;
+	@Column(name = "created_by")
+	private Long createdBy;
 
 	@Column(name = "updated_date")
 	private Date updatedDate;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
+	@Column(name = "updated_by")
+	private Long updatedBy;
 
 	public String getEmail() {
 		return email;
@@ -61,14 +52,6 @@ public class User extends AbstractEntity {
 		this.password = password;
 	}
 
-	public int getCreatedby() {
-		return createdby;
-	}
-
-	public void setCreatedby(int createdby) {
-		this.createdby = createdby;
-	}
-
 	public Date getCreatedDate() {
 		return createdDate;
 	}
@@ -77,12 +60,12 @@ public class User extends AbstractEntity {
 		this.createdDate = createdDate;
 	}
 
-	public int getUpdatedBy() {
-		return updatedBy;
+	public Long getCreatedBy() {
+		return createdBy;
 	}
 
-	public void setUpdatedBy(int updatedBy) {
-		this.updatedBy = updatedBy;
+	public void setCreatedBy(Long createdBy) {
+		this.createdBy = createdBy;
 	}
 
 	public Date getUpdatedDate() {
@@ -91,6 +74,14 @@ public class User extends AbstractEntity {
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public Long getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(Long updatedBy) {
+		this.updatedBy = updatedBy;
 	}
 
 }
