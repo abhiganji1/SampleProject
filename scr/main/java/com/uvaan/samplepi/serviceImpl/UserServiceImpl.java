@@ -22,8 +22,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	UserRepository userRepository;
 
-	@Autowired
-	UserService usersServices;
+	
 
 	@Override
 	public Optional<User> getUserById(Long id) {

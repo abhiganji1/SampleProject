@@ -39,12 +39,12 @@ public class UserController {
 	@Autowired
 	UserValidation userValidator;
 
-	@Autowired(required = true)
-	UserService userServ;
+	@Autowired
+	UserService userService;
 
 	@RequestMapping(path = "/getUserById/{id}", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
 	public ApiResponse getUserById(@PathVariable("id") Long id) {
-		User user = userServ.getUserById(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+		User user = userService.getUserById(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
 		return new ApiResponse(HttpStatus.OK, Constants.SUCCESS, user);
 	}
 
@@ -57,7 +57,7 @@ public class UserController {
 		if (list.size() > 0) {
 			throw new SampleException(list);
 		}
-		User user = userServ.createUser(userParam);
+		User user = userService.createUser(userParam);
 		return new ApiResponse(HttpStatus.OK, Constants.SUCCESS, user);
 	}
 
@@ -70,14 +70,14 @@ public class UserController {
 		if (list.size() > 0) {
 			throw new SampleException(list);
 		}
-		User user = userServ.updateUser(userParam);
+		User user = userService.updateUser(userParam);
 		return new ApiResponse(HttpStatus.OK, Constants.SUCCESS, user);
 	}
 
 	@RequestMapping(path = "/deleteUser/{id}", method = RequestMethod.POST)
 	public ApiResponse deleteUser(@PathVariable("id") Long id) {
 		getUserById(id);
-		userServ.deleteUser(id);
+		userService.deleteUser(id);
 		HashMap<String, String> map = new HashMap<String, String>();
 		map.put("message", "User deleted Successfully..");
 		return new ApiResponse(HttpStatus.OK, Constants.SUCCESS, map);
